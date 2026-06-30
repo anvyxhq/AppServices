@@ -37,7 +37,7 @@ if flags.bool("new_paywall", default: false) { showNewPaywall() }
 
 ## Requirements
 
-- iOS 16.0+ · Swift 5.9+
+- iOS 17.0+ · Swift 5.9+
 
 ## License
 
