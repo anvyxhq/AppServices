@@ -3,7 +3,7 @@
 Vendor-agnostic app services: analytics, App Store review prompting, and feature flags — protocol-first so your app stays decoupled from any SDK.
 
 [![Swift](https://img.shields.io/badge/Swift-5.9+-orange.svg)](https://swift.org)
-[![Platform](https://img.shields.io/badge/iOS-16%2B-blue.svg)](https://developer.apple.com/ios/)
+[![Platform](https://img.shields.io/badge/iOS-26%2B-blue.svg)](https://developer.apple.com/ios/)
 [![SPM](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
 
 ## Features
@@ -37,7 +37,7 @@ if flags.bool("new_paywall", default: false) { showNewPaywall() }
 
 ## Requirements
 
-- iOS 17.0+ · Swift 5.9+
+- iOS 26.0+ · Swift 5.9+
 
 ## License
 
