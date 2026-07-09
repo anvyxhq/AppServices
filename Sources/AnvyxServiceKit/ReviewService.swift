@@ -12,8 +12,8 @@ import SwiftUI
 /// engaged users and never more than the system allows.
 @MainActor
 public enum ReviewService {
-    @AppStorage("anvora.review.significantEvents") private static var events = 0
-    @AppStorage("anvora.review.lastRequestVersion") private static var lastVersion = ""
+    @AppStorage("anvyx.review.significantEvents") private static var events = 0
+    @AppStorage("anvyx.review.lastRequestVersion") private static var lastVersion = ""
 
     /// Record a meaningful action (export, save, share…) and prompt once the
     /// threshold is reached — at most once per app version.

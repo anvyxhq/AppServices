@@ -19,8 +19,8 @@ public final class OnboardingState {
     @ObservationIgnored private var lastSeenVersion: String
 
     private enum Keys {
-        static let completed = "anvora.onboarding.completed"
-        static let lastVersion = "anvora.onboarding.lastSeenVersion"
+        static let completed = "anvyx.onboarding.completed"
+        static let lastVersion = "anvyx.onboarding.lastSeenVersion"
     }
 
     public init(defaults: UserDefaults = .standard) {
