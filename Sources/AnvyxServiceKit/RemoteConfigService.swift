@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import os
 
 /// An async remote-config source you can fetch and then read synchronously.
 /// Wrap Firebase Remote Config, a JSON endpoint, etc.
@@ -16,25 +17,27 @@ public protocol RemoteConfigService: FeatureFlagProvider {
 }
 
 /// Fetches a flat JSON object of flags from a URL and serves them via
-/// `FeatureFlagProvider`. Thread-safe: an internal lock guards the values so
-/// reads stay synchronous while `fetch()` runs concurrently. Falls back to the
-/// provided defaults until the first successful fetch.
-public final class JSONRemoteConfig: RemoteConfigService, @unchecked Sendable {
+/// `FeatureFlagProvider`. Thread-safe: an `OSAllocatedUnfairLock` guards the
+/// values so reads stay synchronous while `fetch()` runs concurrently, which
+/// lets the type be plainly `Sendable`. Falls back to the provided defaults
+/// until the first successful fetch.
+public final class JSONRemoteConfig: RemoteConfigService {
     private let url: URL
     private let session: URLSession
-    private let lock = NSLock()
-    private var values: [String: Any]
+    // The JSON payload is untyped `[String: Any]`, so it can't be `Sendable`;
+    // the lock confines every access, so `uncheckedState` is the safe choice.
+    private let store: OSAllocatedUnfairLock<[String: Any]>
 
     public init(url: URL, defaults: [String: Any] = [:], session: URLSession = .shared) {
         self.url = url
-        self.values = defaults
+        self.store = OSAllocatedUnfairLock(uncheckedState: defaults)
         self.session = session
     }
 
     public func fetch() async throws {
         let (data, _) = try await session.data(from: url)
         guard let object = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
-        lock.withLock { values = object }
+        store.withLockUnchecked { $0 = object }
     }
 
     public func bool(_ key: String, default value: Bool) -> Bool {
@@ -48,6 +51,6 @@ public final class JSONRemoteConfig: RemoteConfigService, @unchecked Sendable {
     }
 
     private func read(_ key: String) -> Any? {
-        lock.withLock { values[key] }
+        store.withLockUnchecked { $0[key] }
     }
 }
